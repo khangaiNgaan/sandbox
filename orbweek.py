@@ -1,55 +1,55 @@
 from datetime import datetime, timedelta
 
-def isLeap(orbweek):
+def is_leap(orbweek):
     return (orbweek + 1) % 5 == 0
 
-def daysInMonth(orbweek, month):
-    monthDays = [16, 11, 16, 15, 16, 15, 16, 16, 15, 16, 15, 16]
-    if isLeap(orbweek) and month == 2:
+def days_in_month(orbweek, month):
+    month_days = [16, 11, 16, 15, 16, 15, 16, 16, 15, 16, 15, 16]
+    if is_leap(orbweek) and month == 2:
         return 12
-    return monthDays[month - 1]
+    return month_days[month - 1]
 
-def daysInYear(orbweek):
-    return 183 if isLeap(orbweek) else 182
+def days_in_year(orbweek):
+    return 183 if is_leap(orbweek) else 182
 
 def greg2orb(date):
-    totalDays = date
+    total_days = date
     orbweek = 0
 
-    while totalDays >= daysInYear(orbweek):
-        totalDays -= daysInYear(orbweek)
+    while total_days >= days_in_year(orbweek):
+        total_days -= days_in_year(orbweek)
         orbweek += 1
     
     month = 1
-    while totalDays >= daysInMonth(orbweek, month):
-        totalDays -= daysInMonth(orbweek, month)
+    while total_days >= days_in_month(orbweek, month):
+        total_days -= days_in_month(orbweek, month)
         month += 1
     
-    day = totalDays + 1
+    day = total_days + 1
     return orbweek, month, day
 
 def orb2greg(orbweek, month, day):
-    totalDays = 0
+    total_days = 0
 
     for week in range(orbweek):
-        totalDays += daysInYear(week)
+        total_days += days_in_year(week)
 
     for m in range(1, month):
-        totalDays += daysInMonth(orbweek, m)
+        total_days += days_in_month(orbweek, m)
     
-    totalDays += day - 1
-    return totalDays
+    total_days += day - 1
+    return total_days
 
-def input2days(inputDate):
-    baseDate = datetime(2070, 1, 1)
-    targetDate = datetime.strptime(inputDate, "%Y-%m-%d")
-    delta = targetDate - baseDate
+def input2days(input_date):
+    base_date = datetime(2070, 1, 1)
+    target_date = datetime.strptime(input_date, "%Y-%m-%d")
+    delta = target_date - base_date
     return delta.days
 
-def days2greg(daysFromBase):
-    baseDate = datetime(2070, 1, 1)
-    targetDate = baseDate + timedelta(days=daysFromBase)
-    return targetDate
+def days2greg(days_from_base):
+    base_date = datetime(2070, 1, 1)
+    target_date = base_date + timedelta(days=days_from_base)
+    return target_date
 
 def main():
     print("\n")
@@ -64,20 +64,20 @@ def main():
     choice = input("Select an option (1 or 2):")
 
     if choice == "1":
-        inputDate = input("Enter an Gregorian date (format: YYYY-MM-DD):")
-        gregDays = input2days(inputDate)
-        orbDate = greg2orb(gregDays)
+        input_date = input("Enter an Gregorian date (format: YYYY-MM-DD):")
+        greg_days = input2days(input_date)
+        orb_date = greg2orb(greg_days)
         print("")
-        print(f"Gregorian {inputDate} correspond to: Orbweek {orbDate[0]} month {orbDate[1]} date {orbDate[2]}")
+        print(f"Gregorian {input_date} correspond to: Orbweek {orb_date[0]} month {orb_date[1]} date {orb_date[2]}")
     elif choice == "2":
         print("Enter an Orbweek date")
         orbweek = int(input("Orbweek:"))
         month = int(input("month:"))
         day = int(input("date:"))
-        daysFromBase = orb2greg(orbweek, month, day)
-        gregDate = days2greg(daysFromBase)
+        days_from_base = orb2greg(orbweek, month, day)
+        greg_date = days2greg(days_from_base)
         print("")
-        print(f"Orbweek {orbweek} month {month} date {day} correspond to: {gregDate.strftime('%Y-%m-%d')}")
+        print(f"Orbweek {orbweek} month {month} date {day} correspond to: {greg_date.strftime('%Y-%m-%d')}")
     else:
         print("Invalid option, please run again.")
 
